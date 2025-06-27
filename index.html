@@ -1,11 +1,12 @@
 
 <!DOCTYPE html>
+
 <html lang="ko">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>정적 JSON 게시판</title>
-  <style>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>정적 JSON 게시판</title>
+<style>
     body { font-family: '맑은 고딕', sans-serif; padding: 1rem; margin: 0; }
     table { width: 100%; border-collapse: collapse; table-layout: fixed; margin-top: 1rem; }
     th, td { border: 1px solid #ccc; padding: 0.5rem; text-align: left; word-wrap: break-word; }
@@ -42,36 +43,181 @@
       td:nth-child(3)::before { content: "발주처"; }
       td:nth-child(4)::before { content: "공사내용"; }
     }
-  </style>
+  
+
+#pagination button {
+  margin: 0 3px;
+  width: 42px;
+  height: 42px;
+  padding: 0;
+  text-align: center;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background: #fff;
+  color: #000;
+  box-sizing: border-box;
+}
+
+#pagination button.active {
+  background-color: #b12221 !important;
+  color: #fff !important;
+  border-color: #b12221 !important;
+}
+
+#pagination button:hover {
+  background-color: #b12221 !important;
+  color: white !important;
+  border-color: #b12221 !important;
+}
+
+
+    /* 열 비율 조정 */
+    table th:nth-child(1), table td:nth-child(1) { width: 15%; text-align: center; }
+    table th:nth-child(2), table td:nth-child(2) { width: 5%;  text-align: center; }
+    table th:nth-child(3), table td:nth-child(3) { width: 30%; }
+    table th:nth-child(4), table td:nth-child(4) { width: 45%; }
+
+    /* 헤더 텍스트 가운데 정렬 */
+    table th { text-align: center; }
+
+    /* 셀 가운데 정렬 (구분, 시공년도만) */
+    table td:nth-child(1), table td:nth-child(2) {
+        text-align: center;
+    }
+    </style>
+<style>
+    .category-buttons {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 20px;
+        flex-wrap: wrap;
+        gap: 6px;
+    }
+    .category-button {
+        background-color: white;
+        border: 1px solid #ccc;
+        color: #000;
+        padding: 8px 16px;
+        font-weight: 500;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background-color 0.3s, color 0.3s;
+    }
+    .category-button.active {
+        background-color: #b12221; /* site key red */
+        color: white;
+        border: 1px solid #b12221;
+    }
+    .category-button:hover {
+        background-color: #b12221;
+        color: white;
+    }
+
+    /* Hide search input */
+    #searchInput {
+        display: none !important;
+    }
+</style>
+<style>
+    .pagination {
+        display: flex;
+        justify-content: center;
+        margin-top: 20px;
+        flex-wrap: wrap;
+        gap: 6px;
+    }
+
+    .pagination button {
+        width: 40px;
+        height: 40px;
+        font-size: 14px;
+        border: 1px solid #ccc;
+        background-color: white;
+        color: #000;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background-color 0.3s, color 0.3s;
+    }
+
+    .pagination button.active {
+        background-color: #b12221;
+        color: white;
+        border: 1px solid #b12221;
+    }
+
+    .pagination button:hover:not(.active) {
+        background-color: #b12221;
+        color: white;
+    }
+</style>
+<style>
+    .pagination {
+        display: flex;
+        justify-content: center;
+        margin-top: 30px;
+        gap: 6px;
+        flex-wrap: wrap;
+    }
+
+    .pagination button {
+        width: 40px;
+        height: 40px;
+        font-size: 14px;
+        border: 1px solid #ccc;
+        background-color: white;
+        color: #000;
+        border-radius: 4px;
+        cursor: pointer;
+        box-sizing: border-box;
+        transition: background-color 0.3s, color 0.3s;
+    }
+
+    .pagination button.active {
+        background-color: #b12221;
+        color: white;
+        border-color: #b12221;
+    }
+
+    .pagination button:hover:not(.active) {
+        background-color: #b12221;
+        color: white;
+    }
+
+    .pagination button svg {
+        width: 16px;
+        height: 16px;
+        vertical-align: middle;
+    }
+</style>
 </head>
 <body>
-  
-  <div id="filters">
-    <button class="category-button active" onclick="setFilter('전체')">전체</button>
-    <button class="category-button" onclick="setFilter('의약품(GMP)')">의약품(GMP)</button>
-    <button class="category-button" onclick="setFilter('의료기기(GMP)')">의료기기(GMP)</button>
-    <button class="category-button" onclick="setFilter('화장품(GMP)')">화장품(GMP)</button>
-    <button class="category-button" onclick="setFilter('건강기능식품(GMP)')">건강기능식품(GMP)</button>
-    <button class="category-button" onclick="setFilter('크린룸(GMP)')">크린룸(GMP)</button>
-    <button class="category-button" onclick="setFilter('일반식품(HACCP)')">일반식품(HACCP)</button>
-    <button class="category-button" onclick="setFilter('반도체(ICR/BCR)')">반도체(ICR/BCR)</button>
-    <button class="category-button" onclick="setFilter('기타공사')">기타공사</button>
-  </div>
-  <input type="text" id="searchInput" oninput="renderTable()" placeholder="검색어를 입력하세요" style="margin-top:10px; padding:5px; width:100%; max-width:300px;" />
-  <table>
-    <colgroup>
-      <col style="width: 20%;">
-      <col style="width: 10%;">
-      <col style="width: 25%;">
-      <col style="width: 45%;">
-    </colgroup>
-    <thead>
-      <tr><th>구분</th><th>시공년도</th><th>발주처</th><th>공사내용</th></tr>
-    </thead>
-    <tbody id="dataBody"></tbody>
-  </table>
-  <div id="pagination"></div>
-  <script>
+<div id="filters">
+<button class="category-button active" onclick="setFilter('전체')">전체</button>
+<button class="category-button" onclick="setFilter('의약품(GMP)')">의약품(GMP)</button>
+<button class="category-button" onclick="setFilter('의료기기(GMP)')">의료기기(GMP)</button>
+<button class="category-button" onclick="setFilter('화장품(GMP)')">화장품(GMP)</button>
+<button class="category-button" onclick="setFilter('건강기능식품(GMP)')">건강기능식품(GMP)</button>
+<button class="category-button" onclick="setFilter('크린룸(GMP)')">크린룸(GMP)</button>
+<button class="category-button" onclick="setFilter('일반식품(HACCP)')">일반식품(HACCP)</button>
+<button class="category-button" onclick="setFilter('반도체(ICR/BCR)')">반도체(ICR/BCR)</button>
+<button class="category-button" onclick="setFilter('기타공사')">기타공사</button>
+</div>
+<input id="searchInput" oninput="renderTable()" placeholder="검색어를 입력하세요" style="margin-top:10px; padding:5px; width:100%; max-width:300px;" type="text"/>
+<table>
+<colgroup>
+<col style="width: 20%;"/>
+<col style="width: 10%;"/>
+<col style="width: 25%;"/>
+<col style="width: 45%;"/>
+</colgroup>
+<thead>
+<tr><th>구분</th><th>시공년도</th><th>발주처</th><th>공사내용</th></tr>
+</thead>
+<tbody id="dataBody"></tbody>
+</table>
+<div id="pagination"></div>
+<script>
     let rawData = [];
     let currentPage = 1;
     const rowsPerPage = 20;
