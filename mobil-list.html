@@ -86,7 +86,7 @@
 
     const categories = [
       "전체", "의약품(GMP)", "의료기기(GMP)", "화장품(GMP)",
-      "건기식(GMP)", "크린룸(GMP)", "일반식품(HACCP)",
+      "건강기능식품(GMP)", "크린룸(GMP)", "일반식품(HACCP)",
       "반도체(ICR/BCR)", "기타공사"
     ];
 
@@ -100,6 +100,7 @@
         btn.onclick = () => {
           currentCategory = cat;
           currentPage = 1;
+          renderCategories();
           renderCards();
         };
         container.appendChild(btn);
