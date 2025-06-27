@@ -77,10 +77,7 @@
     top: auto !important;
     z-index: auto !important;
   }
-  html, body {
-    height: auto !important;
-    overflow: visible !important;
-  }
+  
   body * {
     max-height: none !important;
     overflow: visible !important;
@@ -113,15 +110,25 @@
     z-index: auto !important;
   }
 
-  html, body {
-    height: auto !important;
-    overflow: visible !important;
-  }
+  
 
   body * {
     max-height: none !important;
     overflow: visible !important;
   }
+</style>
+
+
+<style>
+  
+
+  body * {
+    overflow: visible !important;
+    max-height: none !important;
+    -webkit-overflow-scrolling: auto !important;
+  }
+
+  ::\-webkit\-scrollbar { width: 0px; background: transparent; }
 </style>
 
 </head>
@@ -242,3 +249,13 @@
   </script>
 </body>
 </html>
+
+<style>
+html, body {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  height: auto;
+}
+</style>
