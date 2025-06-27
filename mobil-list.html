@@ -72,41 +72,57 @@
   </style>
 
 <style>
+  .scroll-to-fixed-fixed {
+    position: static !important;
+    top: auto !important;
+    z-index: auto !important;
+  }
   html, body {
-    overflow: visible !important;
     height: auto !important;
+    overflow: visible !important;
+  }
+  body * {
+    max-height: none !important;
+    overflow: visible !important;
+  }
+</style>
+
+
+<style>
+  .scroll-to-fixed-fixed,
+  .scroll-to-fixed-placeholder,
+  .scroll-to-fixed-header-wrapper,
+  .scroll-to-fixed,
+  .fix-sticky,
+  .imweb-sticky-wrapper,
+  .fixed-header {
+    position: static !important;
+    top: auto !important;
+    z-index: auto !important;
+    transform: none !important;
+    box-shadow: none !important;
+    background: transparent !important;
+  }
+
+  #scroll-section,
+  .main-visual,
+  .section.visual,
+  .section.main-banner {
+    position: relative !important;
+    top: auto !important;
+    z-index: auto !important;
+  }
+
+  html, body {
+    height: auto !important;
+    overflow: visible !important;
   }
 
   body * {
     max-height: none !important;
     overflow: visible !important;
   }
-
-  ::-webkit-scrollbar {
-    display: none;
-  }
 </style>
-
-<script>
-  window.addEventListener("load", function () {
-    const containers = document.querySelectorAll("div[class*='custom-html'], .iw_custom_code, .imweb-layout, .section");
-    containers.forEach(el => {
-      el.style.maxHeight = "none";
-      el.style.overflowY = "visible";
-      el.style.overflow = "visible";
-      el.style.height = "auto";
-    });
-
-    // iframe 구조 내에 있을 경우 부모에도 적용 시도
-    if (window.parent && window.parent !== window) {
-      try {
-        window.parent.document.body.style.overflow = "visible";
-      } catch (e) {
-        console.warn("iframe 접근 제한", e);
-      }
-    }
-  });
-</script>
 
 </head>
 <body>
@@ -116,32 +132,42 @@
 
   <script>
     const DATA_URL = "https://samyoung-eng.github.io/sy-json-pubilc-board/projectData.json";
-    const ITEMS_PER_PAGE = 10;
+    const ITEMS_PER_PAGE = 5;
     const PAGE_BUTTONS_PER_GROUP = 4;
     let rawData = [];
     let currentPage = 1;
     let currentCategory = '전체';
 
     const categories = [
-      "전체", "의약품(GMP)", "의료기기(GMP)", "화장품(GMP)",
-      "건기식(GMP)", "크린룸(GMP)", "일반식품(HACCP)",
-      "반도체(ICR/BCR)", "기타공사"
-    ];
+  { label: "전체", value: "전체" },
+  { label: "의약품", value: "의약품(GMP)" },
+  { label: "의료기기", value: "의료기기(GMP)" },
+  { label: "화장품", value: "화장품(GMP)" },
+  { label: "건강기능식품", value: "건강기능식품(GMP)" },
+  { label: "크린룸", value: "크린룸(GMP)" },
+  { label: "일반식품", value: "일반식품(HACCP)" },
+  { label: "반도체", value: "반도체(ICR/BCR)" },
+  { label: "기타공사", value: "기타공사" }
+];
 
     function renderCategories() {
       const container = document.getElementById('categoryGrid');
       container.innerHTML = '';
       categories.forEach(cat => {
-        const btn = document.createElement('div');
-        btn.className = 'category-button' + (cat === currentCategory ? ' active' : '');
-        btn.textContent = cat;
-        btn.onclick = () => {
-          currentCategory = cat;
-          currentPage = 1;
-          renderCards();
-        };
-        container.appendChild(btn);
-      });
+  const btn = document.createElement("div");
+  btn.className = "category-button" + (cat.value === currentCategory ? " active" : "");
+  btn.textContent = cat.label;
+  if (cat.label === "전체") {
+    btn.style.gridColumn = "span 2";
+  }
+  btn.onclick = () => {
+    currentCategory = cat.value;
+    currentPage = 1;
+    renderCategories();
+    renderCards();
+  };
+  container.appendChild(btn);
+});
     }
 
     function renderCards() {
