@@ -12,8 +12,6 @@
       background-color: #fff;
     }
     .category-grid {
-      overflow: visible;
-      max-height: none;
       display: grid;
       grid-template-columns: repeat(2, 1fr);
       gap: 10px;
@@ -72,6 +70,23 @@
       color: #fff;
     }
   </style>
+
+<style>
+  .scroll-to-fixed-fixed {
+    position: static !important;
+    top: auto !important;
+    z-index: auto !important;
+  }
+  html, body {
+    height: auto !important;
+    overflow: visible !important;
+  }
+  body * {
+    max-height: none !important;
+    overflow: visible !important;
+  }
+</style>
+
 </head>
 <body>
   <div class="category-grid" id="categoryGrid"></div>
@@ -87,44 +102,35 @@
     let currentCategory = '전체';
 
     const categories = [
-      { label: "의약품", value: "의약품(GMP)" },
-      { label: "의료기기", value: "의료기기(GMP)" },
-      { label: "화장품", value: "화장품(GMP)" },
-      { label: "건강기능식품", value: "건강기능식품(GMP)" },
-      { label: "크린룸", value: "크린룸(GMP)" },
-      { label: "일반식품", value: "일반식품(HACCP)" },
-      { label: "반도체", value: "반도체(ICR/BCR)" },
-      { label: "기타공사", value: "기타공사" }
-    ];
+  { label: "전체", value: "전체" },
+  { label: "의약품", value: "의약품(GMP)" },
+  { label: "의료기기", value: "의료기기(GMP)" },
+  { label: "화장품", value: "화장품(GMP)" },
+  { label: "건강기능식품", value: "건강기능식품(GMP)" },
+  { label: "크린룸", value: "크린룸(GMP)" },
+  { label: "일반식품", value: "일반식품(HACCP)" },
+  { label: "반도체", value: "반도체(ICR/BCR)" },
+  { label: "기타공사", value: "기타공사" }
+];
 
     function renderCategories() {
       const container = document.getElementById('categoryGrid');
       container.innerHTML = '';
-      
-      const allBtn = document.createElement("div");
-      allBtn.className = "category-button" + (currentCategory === "전체" ? " active" : "");
-      allBtn.textContent = "전체";
-      allBtn.style.gridColumn = "span 2";
-      allBtn.onclick = () => {
-        currentCategory = "전체";
-        currentPage = 1;
-        renderCategories();
-        renderCards();
-      };
-      container.appendChild(allBtn);
-
       categories.forEach(cat => {
-        const btn = document.createElement("div");
-        btn.className = "category-button" + (cat.value === currentCategory ? " active" : "");
-        btn.textContent = cat.label;
-        btn.onclick = () => {
-          currentCategory = cat.value;
-          currentPage = 1;
-          renderCategories();
-          renderCards();
-        };
-        container.appendChild(btn);
-      });
+  const btn = document.createElement("div");
+  btn.className = "category-button" + (cat.value === currentCategory ? " active" : "");
+  btn.textContent = cat.label;
+  if (cat.label === "전체") {
+    btn.style.gridColumn = "span 2";
+  }
+  btn.onclick = () => {
+    currentCategory = cat.value;
+    currentPage = 1;
+    renderCategories();
+    renderCards();
+  };
+  container.appendChild(btn);
+});
     }
 
     function renderCards() {
