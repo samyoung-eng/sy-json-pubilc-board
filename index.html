@@ -394,41 +394,9 @@
   }
 }
 </style>
-<style>
-@media (max-width: 768px) {
-    table#projectTable, thead, tbody, th, td, tr {
-        display: block;
-    }
-
-    table#projectTable thead {
-        display: none;
-    }
-
-    table#projectTable tr {
-        border: 1px solid #ccc;
-        margin-bottom: 12px;
-        padding: 10px;
-        border-radius: 8px;
-    }
-
-    table#projectTable td {
-        text-align: left;
-        padding: 6px 10px;
-        border: none;
-        border-bottom: 1px solid #eee;
-    }
-
-    table#projectTable td::before {
-        content: attr(data-label);
-        font-weight: bold;
-        display: block;
-        margin-bottom: 4px;
-        color: #333;
-    }
-}
-</style></head>
+</head>
 <body>
-<div class="category-wrapper" id="filters">
+<div id="filters" class="category-wrapper">
 <button class="category-button active" onclick="setFilter('전체')">전체</button>
 <button class="category-button" onclick="setFilter('의약품(GMP)')">의약품(GMP)</button>
 <button class="category-button" onclick="setFilter('의료기기(GMP)')">의료기기(GMP)</button>
