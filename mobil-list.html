@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>모바일 전용 프로젝트 게시판</title>
+  <style>
+    body {
+      font-family: 'Noto Sans KR', sans-serif;
+      margin: 0;
+      padding: 20px;
+      background-color: #fff;
+    }
+    .category-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .category-button {
+      padding: 10px;
+      background-color: #f3f3f3;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+    .category-button.active {
+      background-color: #aa1c1c;
+      color: #fff;
+      font-weight: bold;
+    }
+    .card {
+      border-top: 1px solid #ddd;
+      padding: 15px 0;
+    }
+    .card h3 {
+      font-size: 16px;
+      margin: 0 0 5px 0;
+    }
+    .card p {
+      margin: 2px 0;
+      color: #444;
+      font-size: 14px;
+    }
+    .pagination {
+      display: flex;
+      justify-content: center;
+      margin-top: 20px;
+      flex-wrap: wrap;
+      gap: 4px;
+    }
+    .pagination button {
+      width: 36px;
+      height: 36px;
+      font-size: 14px;
+      border: 1px solid #ccc;
+      background-color: white;
+      color: #000;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .pagination button.active {
+      background-color: #aa1c1c;
+      color: #fff;
+      border-color: #aa1c1c;
+    }
+    .pagination button:hover:not(.active) {
+      background-color: #aa1c1c;
+      color: #fff;
+    }
+  </style>
+</head>
+<body>
+  <div class="category-grid" id="categoryGrid"></div>
+  <div id="cardList"></div>
+  <div class="pagination" id="pagination"></div>
+
+  <script>
+    const DATA_URL = "https://samyoung-eng.github.io/sy-json-pubilc-board/projectData.json";
+    const ITEMS_PER_PAGE = 10;
+    const PAGE_BUTTONS_PER_GROUP = 4;
+    let rawData = [];
+    let currentPage = 1;
+    let currentCategory = '전체';
+
+    const categories = [
+      "전체", "의약품(GMP)", "의료기기(GMP)", "화장품(GMP)",
+      "건기식(GMP)", "크린룸(GMP)", "일반식품(HACCP)",
+      "반도체(ICR/BCR)", "기타공사"
+    ];
+
+    function renderCategories() {
+      const container = document.getElementById('categoryGrid');
+      container.innerHTML = '';
+      categories.forEach(cat => {
+        const btn = document.createElement('div');
+        btn.className = 'category-button' + (cat === currentCategory ? ' active' : '');
+        btn.textContent = cat;
+        btn.onclick = () => {
+          currentCategory = cat;
+          currentPage = 1;
+          renderCards();
+        };
+        container.appendChild(btn);
+      });
+    }
+
+    function renderCards() {
+      const filtered = currentCategory === '전체' ? rawData : rawData.filter(d => d.구분 === currentCategory);
+      const paginated = filtered.slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE);
+      const container = document.getElementById('cardList');
+      container.innerHTML = '';
+
+      paginated.forEach(item => {
+        const div = document.createElement('div');
+        div.className = 'card';
+        div.innerHTML = `
+          <h3>${item.구분 || ''}</h3>
+          <p>${item.시공년도 || ''}</p>
+          <p>${item.발주처 || ''}</p>
+          <p>${item.공사내용 || ''}</p>
+        `;
+        container.appendChild(div);
+      });
+
+      renderPagination(filtered.length);
+    }
+
+    function renderPagination(totalItems) {
+      const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE);
+      const pageGroup = Math.floor((currentPage - 1) / PAGE_BUTTONS_PER_GROUP);
+      const start = pageGroup * PAGE_BUTTONS_PER_GROUP + 1;
+      const end = Math.min(start + PAGE_BUTTONS_PER_GROUP - 1, totalPages);
+      const container = document.getElementById('pagination');
+      container.innerHTML = '';
+
+      const prevGroupBtn = document.createElement('button');
+      prevGroupBtn.textContent = '◀';
+      prevGroupBtn.disabled = pageGroup === 0;
+      prevGroupBtn.onclick = () => {
+        currentPage = start - PAGE_BUTTONS_PER_GROUP;
+        renderCards();
+      };
+      container.appendChild(prevGroupBtn);
+
+      for (let i = start; i <= end; i++) {
+        const btn = document.createElement('button');
+        btn.textContent = i;
+        if (i === currentPage) btn.classList.add('active');
+        btn.onclick = () => {
+          currentPage = i;
+          renderCards();
+        };
+        container.appendChild(btn);
+      }
+
+      const nextGroupBtn = document.createElement('button');
+      nextGroupBtn.textContent = '▶';
+      nextGroupBtn.disabled = end >= totalPages;
+      nextGroupBtn.onclick = () => {
+        currentPage = start + PAGE_BUTTONS_PER_GROUP;
+        renderCards();
+      };
+      container.appendChild(nextGroupBtn);
+    }
+
+    window.onload = async () => {
+      try {
+        const res = await fetch(DATA_URL);
+        rawData = await res.json();
+        renderCategories();
+        renderCards();
+      } catch (e) {
+        document.getElementById('cardList').innerHTML = '<p style="color:red; text-align:center;">데이터 로딩 실패</p>';
+      }
+    };
+  </script>
+</body>
+</html>
