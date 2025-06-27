@@ -7,6 +7,14 @@
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>정적 JSON 게시판</title>
 <style>
+
+.category-wrapper {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+
     body { font-family: '맑은 고딕', sans-serif; padding: 1rem; margin: 0; }
     table { width: 100%; border-collapse: collapse; table-layout: fixed; margin-top: 1rem; }
     th, td { border: 1px solid #ccc; padding: 0.5rem; text-align: left; word-wrap: break-word; }
@@ -85,8 +93,24 @@
     table td:nth-child(1), table td:nth-child(2) {
         text-align: center;
     }
+    
+    .category-buttons {
+        display: flex !important;
+        justify-content: center !important;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin: 20px 0;
+    }
     </style>
 <style>
+
+.category-wrapper {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+
     .category-buttons {
         display: flex;
         justify-content: center;
@@ -120,6 +144,14 @@
     }
 </style>
 <style>
+
+.category-wrapper {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+
     .pagination {
         display: flex;
         justify-content: center;
@@ -152,6 +184,14 @@
     }
 </style>
 <style>
+
+.category-wrapper {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+
     .pagination {
         display: flex;
         justify-content: center;
@@ -192,7 +232,7 @@
 </style>
 </head>
 <body>
-<div id="filters">
+<div id="filters" class="category-wrapper">
 <button class="category-button active" onclick="setFilter('전체')">전체</button>
 <button class="category-button" onclick="setFilter('의약품(GMP)')">의약품(GMP)</button>
 <button class="category-button" onclick="setFilter('의료기기(GMP)')">의료기기(GMP)</button>
