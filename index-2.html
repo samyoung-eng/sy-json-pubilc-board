@@ -523,16 +523,17 @@
     }
 
     window.onload = () => {
-      fetch("https://samyoung-eng.github.io/sy-json-pubilc-board/projectData.json")
-        .then(res => res.json())
-        .then(data => {
-          rawData = data;
-          setFilter('전체');
-        })
-        .catch(err => {
-          console.error("데이터 로드 실패:", err);
-          document.getElementById("dataBody").innerHTML =
-            "<tr><td colspan='4' style='text-align:center; color:red;'>데이터를 불러올 수 없습니다.</td></tr>";
+  fetch("https://samyoung-eng.github.io/sy-json-pubilc-board/projectData.json")
+    .then(res => res.json())
+    .then(data => {
+      rawData = data;
+      currentFilter = '전체';
+      renderTable();
+    })
+    .catch(err => {
+      console.error("데이터 로드 실패:", err);
+      document.getElementById("dataBody").innerHTML =
+        "<tr><td colspan='4' style='text-align:center; color:red;'>데이터를 불러올 수 없습니다.</td></tr>";
         });
     };
   </script>
