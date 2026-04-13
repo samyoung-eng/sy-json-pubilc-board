@@ -29,6 +29,7 @@
     th {
       background-color: #f2f2f2;
       text-align: center;
+      white-space: nowrap;
     }
 
     #searchInput {
@@ -74,7 +75,6 @@
       opacity: 0.5;
     }
 
-    /* 열 비율 조정 */
     table th:nth-child(1),
     table td:nth-child(1) {
       width: 15%;
@@ -83,21 +83,20 @@
 
     table th:nth-child(2),
     table td:nth-child(2) {
-      width: 5%;
+      width: 10%;
       text-align: center;
     }
 
     table th:nth-child(3),
     table td:nth-child(3) {
-      width: 30%;
+      width: 25%;
     }
 
     table th:nth-child(4),
     table td:nth-child(4) {
-      width: 45%;
+      width: 50%;
     }
 
-    /* 모바일 카드형 */
     @media (max-width: 768px) {
       table.project-table,
       table.project-table thead,
@@ -158,9 +157,9 @@
   <table class="project-table">
     <colgroup>
       <col style="width: 15%;" />
-      <col style="width: 5%;" />
-      <col style="width: 30%;" />
-      <col style="width: 45%;" />
+      <col style="width: 10%;" />
+      <col style="width: 25%;" />
+      <col style="width: 50%;" />
     </colgroup>
     <thead>
       <tr>
@@ -179,16 +178,14 @@
     let rawData = [];
     let currentPage = 1;
     const rowsPerPage = 20;
-    let currentFilter = '전체';
 
     function renderTable() {
       const keyword = document.getElementById('searchInput').value.toLowerCase();
 
       const filtered = rawData.filter(row => {
-        const matchSearch = Object.values(row).some(val =>
+        return Object.values(row).some(val =>
           String(val).toLowerCase().includes(keyword)
         );
-        return matchSearch;
       });
 
       const total = filtered.length;
